@@ -148,6 +148,8 @@ public class Monopoly : MonoBehaviour
 
 	public bool willAcquisit;
 
+	public bool[] buyingBuild;
+
 	// Use this for initialization
 	void Start()
 	{
@@ -220,6 +222,7 @@ public class Monopoly : MonoBehaviour
 
 				break;
 			case GameProgress.Turn:
+				Display();
 				// 필드와 기호를 그립니다.
 
 				// 남은 시간을 그립니다.
@@ -228,9 +231,15 @@ public class Monopoly : MonoBehaviour
 					DrawTime();
 					RollDice();
 				}
+				
+				break;
+
+			case GameProgress.Move:
 				Display();
 				break;
+
 			case GameProgress.Sell:
+				Display();
 				mapScript = map.GetComponent<Map>();
 				Player seller = turnPlayerScript;
 				if (turn == localPlayer)
@@ -247,9 +256,10 @@ public class Monopoly : MonoBehaviour
 						GUI.Label(new Rect(Screen.width / 2, 20 + mapSize * 20, 100, 30), "부족금액 = " + needMoney);
 					isConfirmed = GUI.Button(new Rect(Screen.width / 2, 20 + mapSize * 20 + 20, 100, 30), "매각 승인");
 				}
-
+				
 				break;
 			case GameProgress.Acquisit:
+				Display();
 				Player acquisiter = turnPlayerScript;
 				if (turn == localPlayer)
 				{
@@ -266,21 +276,41 @@ public class Monopoly : MonoBehaviour
 					}
 					isConfirmed = GUI.Button(new Rect(Screen.width / 2, Screen.height / 2 + 40, 100, 20), "승인");
 				}
+				
+				break;
 
+			case GameProgress.Buy:
+				Display();
+				if (turn == localPlayer)
+                {
+					Map.Land land = mapScript.landArray[turnPlayerScript.position];
+					for(int i=0; i<land.build.Length; i++)
+                    {
+                        if (!land.build[i])
+                        {
+							buyingBuild[i] = GUI.Toggle(new Rect(Screen.width / 2, Screen.height / 2 + i*20, 100, 20), buyingBuild[i], "건물 " + i);
+                        }
+                    }
+                    if (BuyingMoney() <= turnPlayerScript.currentMoney)
+                    {
+						isConfirmed = GUI.Button(new Rect(Screen.width / 2, Screen.height / 2 + land.build.Length * 20, 100, 20),"구매 승인");
+                    }
+                }
+				
 				break;
 			case GameProgress.Home:
+				Display();
 				break;
 			case GameProgress.Pay:
-				break;
-			case GameProgress.Buy:
+				Display();
 				break;
 			case GameProgress.Isolated:
+				Display();
 				break;
 			case GameProgress.Olympic:
+				Display();
 				break;
 			case GameProgress.Airport:
-				break;
-			case GameProgress.Move:
 				Display();
 				break;
 
@@ -480,6 +510,10 @@ public class Monopoly : MonoBehaviour
 
 	void UpdateSell()
 	{
+		if(turnPlayerScript.currentMoney >= mapScript.landArray[turnPlayerScript.position].Getfee())
+        {
+			progress = GameProgress.Pay;
+        }
 		bool setMark = false;
 
 		if (turn == localPlayer)
@@ -636,6 +670,17 @@ public class Monopoly : MonoBehaviour
 
 	void UpdateAcquisit()
 	{
+		Map.Land land = mapScript.landArray[turnPlayerScript.position];
+		if(land.owner == turn || land.owner == PlayerType.None)
+        {
+			ResetBuy();
+			progress = GameProgress.Buy;
+		}
+        if (BuiltAll())
+        {
+			ResetBuy();
+			progress = GameProgress.Buy;
+		}
 		bool setMark = false;
 
 		if (turn == localPlayer)
@@ -660,7 +705,10 @@ public class Monopoly : MonoBehaviour
 			audio.Play();
 		}
 		if (setMark)
+        {
+			ResetBuy();
 			progress = GameProgress.Buy;
+		}
 	}
 
 	void TransactLand()
@@ -722,46 +770,169 @@ public class Monopoly : MonoBehaviour
 		}
 	}
 
+	void ResetBuy()
+    {
+		isConfirmed = false;
+		buyingBuild = new bool[mapScript.landArray[1].build.Length];
+	}
+
+	int BuyingMoney()
+    {
+		int sum = 0;
+		for(int i=0; i<buyingBuild.Length; i++)
+        {
+            if (buyingBuild[i])
+            {
+				sum += mapScript.landArray[turnPlayerScript.position].price[i];
+            }
+        }
+		return sum;
+    }
+
+	bool BuiltAll()
+    {
+		Map.Land land = mapScript.landArray[turnPlayerScript.position];
+		int sum=0;
+		for(int i=0; i<land.build.Length; i++)
+        {
+			if (land.build[i]) sum++;
+        }
+		if (sum == land.build.Length) return true;
+		else return false;
+    }
+
 	void UpdateBuy()
 	{
-		// 턴을 갱신합니다.
-		ChangeTurn();
-		progress = GameProgress.Turn;
+		if(mapScript.landArray[turnPlayerScript.position].owner != PlayerType.None &&
+			turn != mapScript.landArray[turnPlayerScript.position].owner)
+        {
+			ChangeTurn();
+			progress = GameProgress.Turn;
+			return;
+		}
+		if(turnPlayerScript.currentMoney < mapScript.landArray[turnPlayerScript.position].price[0])
+        {
+			ChangeTurn();
+			progress = GameProgress.Turn;
+			return;
+		}
+        if (BuiltAll())
+        {
+			ChangeTurn();
+			progress = GameProgress.Turn;
+			return;
+		}
+		
+		bool setMark = false;
+
+		if (turn == localPlayer)
+		{
+			setMark = DoOwnBuy();
+		}
+		else
+		{
+			setMark = DoOpponentBuy();
+		}
+
+		if (setMark == false)
+		{
+			// 놓을 곳을 검토 중입니다.	
+			return;
+		}
+		else
+		{
+			//기호가 놓이는 사운드 효과를 냅니다. 
+			AudioSource audio = GetComponent<AudioSource>();
+			audio.clip = se_setMark;
+			audio.Play();
+		}
+
+        if (setMark)
+        {
+			// 턴을 갱신합니다.
+			ChangeTurn();
+			progress = GameProgress.Turn;
+			return;
+		}
 	}
+
+	void TransactBuild()
+    {
+		Debug.Log("TransactBuild");
+		Map.Land land = mapScript.landArray[turnPlayerScript.position];
+		for(int i=0; i<buyingBuild.Length; i++)
+        {
+            if (buyingBuild[i])
+            {
+				land.owner = turn;
+				land.build[i] = true;
+				turnPlayerScript.currentMoney -= land.price[i];
+            }
+        }
+    }
 
 	bool DoOwnBuy()
 	{
-
-		return true;
+		Map.Land land = mapScript.landArray[turnPlayerScript.position];
+		if (isConfirmed)
+		{
+			TransactBuild();
+			byte[] buffer = new byte[sizeof(bool) * land.build.Length];
+			Buffer.BlockCopy(buyingBuild, 0, buffer, 0, buffer.Length);
+			m_transport.Send(buffer, buffer.Length);
+			return true;
+		}
+		return false;
 	}
 	bool DoOpponentBuy()
 	{
-		return true;
+		Map.Land land = mapScript.landArray[turnPlayerScript.position];
+		byte[] buffer = new byte[sizeof(bool) * land.build.Length];
+		int recvSize = m_transport.Receive(ref buffer, buffer.Length);
+
+		if (recvSize <= 0)
+		{
+			// 아직 수신이 완료 되지 않았습니다.
+			return false;
+		}
+        else
+        {
+			for (int i = 0; i < buyingBuild.Length; i++)
+			{
+				buyingBuild[i] = BitConverter.ToBoolean(buffer, i);
+			}
+			TransactBuild();
+			return true;
+		}
 	}
 
 	void UpdateHome()
 	{
 		// 턴을 갱신합니다.
-		turn = (turn == PlayerType.Player1) ? PlayerType.Player2 : PlayerType.Player1;
+		ChangeTurn();
 		progress = GameProgress.Turn;
+		return;
 	}
 	void UpdateIsolated()
 	{
 		// 턴을 갱신합니다.
-		turn = (turn == PlayerType.Player1) ? PlayerType.Player2 : PlayerType.Player1;
+		ChangeTurn();
 		progress = GameProgress.Turn;
+		return;
 	}
 	void UpdateOlympic()
 	{
 		// 턴을 갱신합니다.
-		turn = (turn == PlayerType.Player1) ? PlayerType.Player2 : PlayerType.Player1;
+		ChangeTurn();
 		progress = GameProgress.Turn;
+		return;
 	}
 	void UpdateAirport()
 	{
 		// 턴을 갱신합니다.
-		turn = (turn == PlayerType.Player1) ? PlayerType.Player2 : PlayerType.Player1;
+		ChangeTurn();
 		progress = GameProgress.Turn;
+		return;
 	}
 
 	// 게임 종료 처리
@@ -936,7 +1107,7 @@ public class Monopoly : MonoBehaviour
 		GUIStyle style = new GUIStyle();
 		style.fontSize = 20;
 		style.normal.textColor = Color.white;
-		GUI.Label(new Rect(75, 20, 150, 20), "Dice Value: " + diceValue, style);
+		GUI.Label(new Rect(30, 20, 150, 20), "Dice Value: " + diceValue, style);
 	}
 
 	public void PositionDisplay()
@@ -944,8 +1115,8 @@ public class Monopoly : MonoBehaviour
 		GUIStyle style = new GUIStyle();
 		style.fontSize = 20;
 		style.normal.textColor = Color.white;
-		GUI.Label(new Rect(75, 40, 150, 20), "Player1 Position: " + player1.GetComponent<Player>().position, style);
-		GUI.Label(new Rect(75, 60, 150, 20), "Player2 Position: " + player2.GetComponent<Player>().position, style);
+		GUI.Label(new Rect(30, 40, 150, 20), "Player1 Position: " + player1.GetComponent<Player>().position, style);
+		GUI.Label(new Rect(30, 60, 150, 20), "Player2 Position: " + player2.GetComponent<Player>().position, style);
 	}
 
 	public void MapDisplay()
@@ -956,7 +1127,7 @@ public class Monopoly : MonoBehaviour
 		for (int i = 0; i < map.GetComponent<Map>().mapSize; i++)
 		{
 			Map.Land land = map.GetComponent<Map>().landArray[i];
-			GUI.Label(new Rect(75, 80 + i * 20, 300, 20), i + "th land:" + land.owner + "/" + land.type + "/" + land.build[0] + "/" + land.build[1] + "/" + land.build[2] + "/" + land.build[3], style);
+			GUI.Label(new Rect(30, 80 + (i+2) * 20, 300, 20), i + "th land:" + land.owner + "/" + land.type + "/" + land.build[0] + "/" + land.build[1] + "/" + land.build[2] + "/" + land.build[3], style);
 		}
 	}
 
@@ -971,12 +1142,12 @@ public class Monopoly : MonoBehaviour
 		{
 			lands += landNum + ",";
 		}
-		GUI.Label(new Rect(75, 80 + 28 * 20, 300, 20), "Player1:" + lands + "/" + player1.GetComponent<Player>().currentMoney + "/" + player1.GetComponent<Player>().position, style);
+		GUI.Label(new Rect(30, 80, 300, 20), "Player1:" + lands + "/" + player1.GetComponent<Player>().currentMoney, style);
 		lands = "";
 		foreach (int landNum in player2.GetComponent<Player>().ownLand)
 		{
 			lands += landNum + ",";
 		}
-		GUI.Label(new Rect(75, 80 + 29 * 20, 300, 20), "Player2:" + lands + "/" + player2.GetComponent<Player>().currentMoney + "/" + player2.GetComponent<Player>().position, style);
+		GUI.Label(new Rect(30, 80 + 20, 300, 20), "Player2:" + lands + "/" + player2.GetComponent<Player>().currentMoney, style);
 	}
 }

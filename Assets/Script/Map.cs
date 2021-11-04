@@ -26,8 +26,8 @@ public class Map : MonoBehaviour
 	public class Land
 	{
 		public LandType type = LandType.Usual;
-		public Monopoly.PlayerType owner = Monopoly.PlayerType.Player2;
-		public bool[] build = { true, false, false, false };
+		public Monopoly.PlayerType owner = Monopoly.PlayerType.None;
+		public bool[] build = { false, false, false, false };
 		public int[] price = { 0, 0, 0, 0 };
 		public int Getfee()
 		{
@@ -116,6 +116,5 @@ public class Map : MonoBehaviour
 				landArray[i].price[3] = int.Parse(data[4]);
 			}
 		}
-		landArray[1].owner = Monopoly.PlayerType.Player1;
 	}
 }
