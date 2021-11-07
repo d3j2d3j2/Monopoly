@@ -10,6 +10,7 @@ public class Player : MonoBehaviour
 	public int position;
 	public Map map;
 	public Monopoly.PlayerType playerType;
+	public int isolatedCount = 0;
 	// Use this for initialization
 	void Start()
 	{

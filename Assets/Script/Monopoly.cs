@@ -139,8 +139,6 @@ public class Monopoly : MonoBehaviour
 	public GameObject player1;
 	public GameObject player2;
 
-	public float delayTime;
-
 	public bool isConfirmed;
 	public bool[] sellingLands;
 	public bool isBankrupt;
@@ -149,6 +147,8 @@ public class Monopoly : MonoBehaviour
 	public bool willAcquisit;
 
 	public bool[] buyingBuild;
+
+	public float delayTime;
 
 	// Use this for initialization
 	void Start()
@@ -170,7 +170,6 @@ public class Monopoly : MonoBehaviour
 	// Update is called once per frame
 	void Update()
 	{
-
 		switch (progress)
 		{
 			case GameProgress.Ready:
@@ -223,13 +222,19 @@ public class Monopoly : MonoBehaviour
 				break;
 			case GameProgress.Turn:
 				Display();
-				// 필드와 기호를 그립니다.
-
+                // 필드와 기호를 그립니다.
 				// 남은 시간을 그립니다.
 				if (turn == localPlayer)
 				{
-					DrawTime();
-					RollDice();
+					if (turnPlayerScript.isolatedCount > 0)
+					{
+						GUI.Label(new Rect(Screen.width / 2, Screen.height / 2, 300, 20), "자동차 사고로 쉽니다. 남은 턴: " + (turnPlayerScript.isolatedCount - 1));
+					}
+                    else
+                    {
+						DrawTime();
+						RollDice();
+					}
 				}
 				
 				break;
@@ -372,6 +377,17 @@ public class Monopoly : MonoBehaviour
 
 	void UpdateTurn()
 	{
+		if (turnPlayerScript.isolatedCount > 0)
+		{
+			delayTime += Time.deltaTime;
+			if (delayTime > 2)
+			{
+				turnPlayerScript.isolatedCount--;
+				delayTime = 0;
+				ChangeTurn();
+				progress = GameProgress.Turn;
+			}
+		}
 		bool setMark = false;
 
 		if (turn == localPlayer)
@@ -915,6 +931,8 @@ public class Monopoly : MonoBehaviour
 	}
 	void UpdateIsolated()
 	{
+		turnPlayerScript.isolatedCount = 2;
+		delayTime = 0;
 		// 턴을 갱신합니다.
 		ChangeTurn();
 		progress = GameProgress.Turn;
