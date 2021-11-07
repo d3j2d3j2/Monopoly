@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-	public List<int> ownLand;
 	public const int StartMoney = 1000000;
 	public int currentMoney;
 	public int position;
@@ -26,7 +25,6 @@ public class Player : MonoBehaviour
 	public void Reset()
 	{
 		currentMoney = StartMoney;
-		ownLand = new List<int>();
 		position = 0;
 	}
 	public int Property()
@@ -54,4 +52,12 @@ public class Player : MonoBehaviour
 	{
 		return currentMoney + Property();
 	}
+	public bool haveLands()
+    {
+		foreach(var land in map.landArray)
+        {
+			if (land.owner == playerType) return true;
+        }
+		return false;
+    }
 }

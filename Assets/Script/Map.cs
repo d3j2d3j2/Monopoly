@@ -50,6 +50,19 @@ public class Map : MonoBehaviour
 			}
 			return sum;
 		}
+
+		public int NumBuild()
+        {
+			int sum = 0;
+			for(int i=0; i<build.Length; i++)
+            {
+				if(build[i])
+                {
+					sum += 1;
+                }
+            }
+			return sum;
+        }
 	}
 
 	public Land[] landArray;
