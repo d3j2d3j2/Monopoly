@@ -29,13 +29,15 @@ public class Map : MonoBehaviour
 		public Monopoly.PlayerType owner = Monopoly.PlayerType.None;
 		public bool[] build = { false, false, false, false };
 		public int[] price = { 0, 0, 0, 0 };
-		public int Getfee()
+		public int landNum = -1;
+		public int GetFee()
 		{
 			int sum = 0;
 			if (build[0]) sum += price[0];
 			if (build[1]) sum += price[1];
 			if (build[2]) sum += price[2];
 			if (build[3]) sum += price[3];
+			if(landNum == Monopoly.olympicLand) sum *= Monopoly.olympicScaler; 
 			return sum / 2;
 		}
 		public int GetCurTotalPrice()
@@ -90,6 +92,7 @@ public class Map : MonoBehaviour
 		for (int i = 0; i < mapSize; i++)
 		{
 			landArray[i] = new Land();
+			landArray[i].landNum = i;
 			var data = lines[i].Split(spliter, option);
 			LandType landType;
 			switch (data[0][0])
@@ -128,6 +131,11 @@ public class Map : MonoBehaviour
 				landArray[i].price[2] = int.Parse(data[3]);
 				landArray[i].price[3] = int.Parse(data[4]);
 			}
+            else
+            {
+				landArray[i].build = null;
+				landArray[i].price = null;
+            }
 		}
 	}
 }

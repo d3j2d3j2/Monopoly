@@ -152,7 +152,11 @@ public class Monopoly : MonoBehaviour
 
 	public const int SALARY = 1000;
 	public bool[] isLandChosenArray;
-	public static int buildSize;
+	public const int BuildSize = 4;
+	
+	public static int olympicScaler = 1;
+	public static int olympicLand = -1;
+	public const int MaxOlympicScaler = 5;
 
 	// Use this for initialization
 	void Start()
@@ -259,7 +263,7 @@ public class Monopoly : MonoBehaviour
 							sellingLands[i] = GUI.Toggle(new Rect(Screen.width / 2, 20 + i * 20, 100, 30), sellingLands[i], " " + i + ":" + mapScript.landArray[i].GetCurTotalPrice());
 						}
 					}
-					int needMoney = mapScript.landArray[seller.position].Getfee() - seller.currentMoney;
+					int needMoney = mapScript.landArray[seller.position].GetFee() - seller.currentMoney;
 					if (needMoney > 0)
 						GUI.Label(new Rect(Screen.width / 2, 20 + mapSize * 20, 100, 30), "부족금액 = " + needMoney);
 					isConfirmed = GUI.Button(new Rect(Screen.width / 2, 20 + mapSize * 20 + 20, 100, 30), "매각 승인");
@@ -359,9 +363,44 @@ public class Monopoly : MonoBehaviour
 				Display();
 				break;
 			case GameProgress.Olympic:
+				if (turn == localPlayer)
+				{
+					if (turnPlayerScript.haveLands())
+					{
+						if (NumChosenLands() != 1)
+						{
+							for (int i = 0; i < mapSize; i++)
+							{
+								if (mapScript.landArray[i].owner == turnPlayerScript.playerType)
+								{
+									isLandChosenArray[i] = GUI.Toggle(new Rect(Screen.width / 2, i * 20, 100, 20), isLandChosenArray[i], "Land " + i);
+								}
+							}
+							if(NumChosenLands() == 1)
+                            {
+								isConfirmed = true;
+                            }
+						}
+					}
+				}
 				Display();
 				break;
 			case GameProgress.Airport:
+				if (turn == localPlayer)
+				{
+					if (NumChosenLands() != 1)
+					{
+						for (int i = 0; i < mapSize; i++)
+						{		
+							if(i!=turnPlayerScript.position)
+								isLandChosenArray[i] = GUI.Toggle(new Rect(Screen.width / 2, i * 20, 100, 20), isLandChosenArray[i], "Land " + i);
+						}
+						if (NumChosenLands() == 1)
+						{
+							isConfirmed = true;
+						}
+					}	
+				}
 				Display();
 				break;
 
@@ -557,8 +596,16 @@ public class Monopoly : MonoBehaviour
 				progress = GameProgress.Home;
 			}
 			if (landType == Map.LandType.Isolated) progress = GameProgress.Isolated;
-			if (landType == Map.LandType.Olympic) progress = GameProgress.Olympic;
-			if (landType == Map.LandType.Airport) progress = GameProgress.Airport;
+			if (landType == Map.LandType.Olympic)
+			{
+				ResetOlympic();
+				progress = GameProgress.Olympic;
+			}
+			if (landType == Map.LandType.Airport)
+			{
+				ResetAirport();
+				progress = GameProgress.Airport;
+			}
 		}
 	}
 
@@ -577,7 +624,7 @@ public class Monopoly : MonoBehaviour
 
 	void UpdateSell()
 	{
-		if(turnPlayerScript.currentMoney >= mapScript.landArray[turnPlayerScript.position].Getfee())
+		if(turnPlayerScript.currentMoney >= mapScript.landArray[turnPlayerScript.position].GetFee())
         {
 			progress = GameProgress.Pay;
         }
@@ -708,7 +755,7 @@ public class Monopoly : MonoBehaviour
 			{
 				if (curLand.owner != turn)
 				{
-					if (payer.currentMoney < curLand.Getfee())
+					if (payer.currentMoney < curLand.GetFee())
 					{
 						if (turn == PlayerType.Player1)
 							winner = Winner.Player2;
@@ -719,8 +766,8 @@ public class Monopoly : MonoBehaviour
 					}
 					else
 					{
-						payer.currentMoney -= curLand.Getfee();
-						taker.currentMoney += curLand.Getfee();
+						payer.currentMoney -= curLand.GetFee();
+						taker.currentMoney += curLand.GetFee();
 					}
 				}
 			}
@@ -1082,19 +1129,181 @@ public class Monopoly : MonoBehaviour
 		progress = GameProgress.Turn;
 		return;
 	}
+
+	void ResetOlympic()
+    {
+		isLandChosenArray = new bool[mapSize];
+		isConfirmed = false;
+	}
+
+	bool DoOwnOlympic()
+    {
+		if (isConfirmed)
+		{
+			olympicLand = ChosenLand();
+			olympicScaler = Math.Min(olympicScaler + 1, MaxOlympicScaler);
+			byte[] buffer = new byte[sizeof(int)];
+			Buffer.BlockCopy(BitConverter.GetBytes(olympicLand), 0, buffer, 0, sizeof(int));
+			m_transport.Send(buffer, buffer.Length);
+			return true;
+		}
+		return false;
+	}
+	bool DoOpponentOlympic()
+    {
+		byte[] buffer = new byte[sizeof(int)];
+		int recvSize = m_transport.Receive(ref buffer, buffer.Length);
+		if (recvSize <= 0)
+		{
+			// 아직 수신이 완료 되지 않았습니다.
+			return false;
+		}
+		else
+		{
+			olympicLand = BitConverter.ToInt32(buffer, 0);
+			olympicScaler = Math.Min(olympicScaler + 1, MaxOlympicScaler);
+			return true;
+		}
+	}
+
 	void UpdateOlympic()
 	{
-		// 턴을 갱신합니다.
-		ChangeTurn();
-		progress = GameProgress.Turn;
-		return;
+		if (turnPlayerScript.haveLands() == false)
+		{
+			ChangeTurn();
+			progress = GameProgress.Turn;
+			return;
+		}
+		bool setMark = false;
+
+		if (turn == localPlayer)
+		{
+			setMark = DoOwnOlympic();
+		}
+		else
+		{
+			setMark = DoOpponentOlympic();
+		}
+
+		if (setMark == false)
+		{
+			// 놓을 곳을 검토 중입니다.	
+			return;
+		}
+		else
+		{
+			//기호가 놓이는 사운드 효과를 냅니다. 
+			AudioSource audio = GetComponent<AudioSource>();
+			audio.clip = se_setMark;
+			audio.Play();
+		}
+
+		if (setMark)
+		{
+			// 턴을 갱신합니다.
+			ChangeTurn();
+			progress = GameProgress.Turn;
+			return;
+		}
 	}
+
+	void ResetAirport()
+    {
+		isLandChosenArray = new bool[mapSize];
+		isConfirmed = false;
+    }
+
+	bool DoOwnAirport()
+    {
+		if (isConfirmed)
+		{
+			turnPlayerScript.position = ChosenLand();
+			byte[] buffer = new byte[sizeof(int)];
+			Buffer.BlockCopy(BitConverter.GetBytes(turnPlayerScript.position), 0, buffer, 0, sizeof(int));
+			m_transport.Send(buffer, buffer.Length);
+		
+			Map.LandType landType = map.GetComponent<Map>().landArray[turnPlayerScript.position].type;
+
+			if (landType == Map.LandType.Usual)
+			{
+				ResetSell();
+				progress = GameProgress.Sell;
+			}
+			if (landType == Map.LandType.Home)
+			{
+				ResetHome();
+				progress = GameProgress.Home;
+			}
+			if (landType == Map.LandType.Isolated) progress = GameProgress.Isolated;
+			if (landType == Map.LandType.Olympic)
+			{
+				ResetOlympic();
+				progress = GameProgress.Olympic;
+			}
+			return true;
+		}
+		return false;
+	}
+
+	bool DoOpponentAirport()
+    {
+		byte[] buffer = new byte[sizeof(int)];
+		int recvSize = m_transport.Receive(ref buffer, buffer.Length);
+		if (recvSize <= 0)
+		{
+			// 아직 수신이 완료 되지 않았습니다.
+			return false;
+		}
+		else
+		{
+			turnPlayerScript.position = BitConverter.ToInt32(buffer, 0);
+			Map.LandType landType = map.GetComponent<Map>().landArray[turnPlayerScript.position].type;
+
+			if (landType == Map.LandType.Usual)
+			{
+				ResetSell();
+				progress = GameProgress.Sell;
+			}
+			if (landType == Map.LandType.Home)
+			{
+				ResetHome();
+				progress = GameProgress.Home;
+			}
+			if (landType == Map.LandType.Isolated) progress = GameProgress.Isolated;
+			if (landType == Map.LandType.Olympic)
+			{
+				ResetOlympic();
+				progress = GameProgress.Olympic;
+			}
+			return true;
+		}
+	}
+
 	void UpdateAirport()
 	{
-		// 턴을 갱신합니다.
-		ChangeTurn();
-		progress = GameProgress.Turn;
-		return;
+		bool setMark = false;
+
+		if (turn == localPlayer)
+		{
+			setMark = DoOwnAirport();
+		}
+		else
+		{
+			setMark = DoOpponentAirport();
+		}
+
+		if (setMark == false)
+		{
+			// 놓을 곳을 검토 중입니다.	
+			return;
+		}
+		else
+		{
+			//기호가 놓이는 사운드 효과를 냅니다. 
+			AudioSource audio = GetComponent<AudioSource>();
+			audio.clip = se_setMark;
+			audio.Play();
+		}
 	}
 
 	// 게임 종료 처리
@@ -1117,7 +1326,6 @@ public class Monopoly : MonoBehaviour
 		map.GetComponent<Map>().LoadFromAsset();
 		mapSize = map.GetComponent<Map>().mapSize;
 		mapScript = map.GetComponent<Map>();
-		buildSize = mapScript.landArray[1].build.Length;
 		player1 = GameObject.Find("Player1");
 		player2 = GameObject.Find("Player2");
 		player1.GetComponent<Player>().Reset();
@@ -1127,6 +1335,7 @@ public class Monopoly : MonoBehaviour
 		turn = PlayerType.Player1;
 		turnPlayer = player1;
 		turnPlayerScript = player1.GetComponent<Player>();
+		olympicScaler = 1;
 	}
 
 	// 남은 시간 표시.
@@ -1261,8 +1470,10 @@ public class Monopoly : MonoBehaviour
 	{
 		DiceValueDisplay();
 		PositionDisplay();
-		MapDisplay();
 		PlayerDisplay();
+		OlympicDisplay();
+		MapDisplay();
+		
 	}
 
 	public void DiceValueDisplay()
@@ -1290,7 +1501,15 @@ public class Monopoly : MonoBehaviour
 		for (int i = 0; i < map.GetComponent<Map>().mapSize; i++)
 		{
 			Map.Land land = map.GetComponent<Map>().landArray[i];
-			GUI.Label(new Rect(30, 80 + (i+2) * 20, 300, 20), i + "th land:" + land.owner + "/" + land.type + "/" + land.build[0] + "/" + land.build[1] + "/" + land.build[2] + "/" + land.build[3], style);
+			string landInfo = i + "th land:" + land.type + "/" + land.owner;
+			if(land.build != null)
+            {
+				for (int j = 0; j < land.build.Length; j++)
+				{
+					landInfo += "/" + land.build[j];
+				}
+			}
+			GUI.Label(new Rect(30, 80 + (i+3) * 20, 300, 20), landInfo, style);
 		}
 	}
 
@@ -1318,4 +1537,9 @@ public class Monopoly : MonoBehaviour
 		}
 		GUI.Label(new Rect(30, 80 + 20, 300, 20), "Player2:" + lands + "/" + player2.GetComponent<Player>().currentMoney, style);
 	}
+
+	public void OlympicDisplay()
+    {
+		GUI.Label(new Rect(30, 80 + 2 * 20, 300, 20), "Olympic:" + olympicLand + "/" + "Olympic Scaler:" + olympicScaler);
+    }
 }
