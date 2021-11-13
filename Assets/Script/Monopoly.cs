@@ -270,6 +270,17 @@ public class Monopoly : MonoBehaviour
 				}
 				
 				break;
+
+			case GameProgress.Pay:
+				GUI.Label(new Rect(Screen.width / 2, Screen.height/2, 100, 30),
+					"지불금액 = " + mapScript.landArray[turnPlayerScript.position].GetFee());
+				if (turn == localPlayer)
+				{
+					isConfirmed = GUI.Button(new Rect(Screen.width / 2, Screen.height / 2 + 30, 100, 30), "지불 승인");
+				}
+				Display();
+				break;
+
 			case GameProgress.Acquisit:
 				Display();
 				Player acquisiter = turnPlayerScript;
@@ -356,9 +367,7 @@ public class Monopoly : MonoBehaviour
 				}
 				Display();
 				break;
-			case GameProgress.Pay:
-				Display();
-				break;
+
 			case GameProgress.Isolated:
 				Display();
 				break;
@@ -626,6 +635,7 @@ public class Monopoly : MonoBehaviour
 	{
 		if(turnPlayerScript.currentMoney >= mapScript.landArray[turnPlayerScript.position].GetFee())
         {
+			ResetPay();
 			progress = GameProgress.Pay;
         }
 		bool setMark = false;
@@ -652,7 +662,11 @@ public class Monopoly : MonoBehaviour
 			audio.Play();
 		}
 		if (setMark)
+        {
+			ResetPay();
 			progress = GameProgress.Pay;
+		}
+			
 	}
 
 	bool DoOwnSell()
@@ -735,6 +749,136 @@ public class Monopoly : MonoBehaviour
 	}
 
 	void UpdatePay()
+    {
+		bool setMark = false;
+
+		if (turn == localPlayer)
+		{
+			setMark = DoOwnPay();
+		}
+		else
+		{
+			setMark = DoOpponentPay();
+		}
+
+		if (setMark == false)
+		{
+			// 놓을 곳을 검토 중입니다.	
+			return;
+		}
+		else
+		{
+			//기호가 놓이는 사운드 효과를 냅니다. 
+			AudioSource audio = GetComponent<AudioSource>();
+			audio.clip = se_setMark;
+			audio.Play();
+		}
+		if (setMark)
+        {
+			if (isBankrupt)
+				progress = GameProgress.Result;
+            else
+            {
+				ResetAcuisit();
+				progress = GameProgress.Acquisit;
+			}
+		}
+	}
+
+	void ResetPay()
+    {
+		isConfirmed = false;
+		isBankrupt = false;
+    }
+
+	bool DoOwnPay()
+    {
+		if (isConfirmed)
+        {
+			byte[] buffer = new byte[sizeof(bool)];
+			buffer = BitConverter.GetBytes(isConfirmed);
+			m_transport.Send(buffer, buffer.Length);
+
+			Map.Land curLand = map.GetComponent<Map>().landArray[turnPlayerScript.position];
+			if (curLand.type == Map.LandType.Usual)
+			{
+				if (curLand.owner != PlayerType.None)
+				{
+					if (curLand.owner != turn)
+					{
+						if (turnPlayerScript.currentMoney < curLand.GetFee())
+						{
+							if (turn == PlayerType.Player1)
+								winner = Winner.Player2;
+							else
+								winner = Winner.Player1;
+							isBankrupt = true;
+						}
+						else
+						{
+							turnPlayerScript.currentMoney -= curLand.GetFee();
+							Player taker;
+							if (turn == player1.GetComponent<Player>().playerType)
+								taker = player2.GetComponent<Player>();
+							else
+								taker = player1.GetComponent<Player>();
+							taker.currentMoney += curLand.GetFee();
+							Debug.Log("" + turnPlayerScript.playerType);
+						}
+					}
+				}
+			}
+			return true;
+		}
+		return false;
+		
+	}
+
+	bool DoOpponentPay()
+    {
+		byte[] buffer = new byte[sizeof(bool)];
+		int recvSize = m_transport.Receive(ref buffer, buffer.Length);
+		if (recvSize > 0)
+		{
+			isConfirmed = BitConverter.ToBoolean(buffer, 0);
+		}
+		if (isConfirmed)
+		{
+			Map.Land curLand = map.GetComponent<Map>().landArray[turnPlayerScript.position];
+			if (curLand.type == Map.LandType.Usual)
+			{
+				if (curLand.owner != PlayerType.None)
+				{
+					if (curLand.owner != turn)
+					{
+						if (turnPlayerScript.currentMoney < curLand.GetFee())
+						{
+							if (turn == PlayerType.Player1)
+								winner = Winner.Player2;
+							else
+								winner = Winner.Player1;
+							isBankrupt = true;
+						}
+						else
+						{
+							turnPlayerScript.currentMoney -= curLand.GetFee();
+							Player taker;
+							if (turn == player1.GetComponent<Player>().playerType)
+								taker = player1.GetComponent<Player>();
+							else
+								taker = player2.GetComponent<Player>();
+							taker.currentMoney += curLand.GetFee();
+						}
+					}
+				}
+			}
+			return true;
+		}
+		return false;
+	}
+
+/*
+	void UpdatePay()
 	{
 		Player payer;
 		Player taker;
@@ -775,7 +919,7 @@ public class Monopoly : MonoBehaviour
 		ResetAcuisit();
 		progress = GameProgress.Acquisit;
 	}
-
+*/
 	void ResetAcuisit()
 	{
 		isConfirmed = false;

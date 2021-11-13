@@ -89,7 +89,7 @@ public class TransportTCP : MonoBehaviour {
         return LaunchThread();
     }
 
-	// 대기 정료.
+	// 대기 종료.
     public void StopServer()
     {
 		m_threadLoop = false;
