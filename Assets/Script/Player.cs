@@ -11,6 +11,7 @@ public class Player : MonoBehaviour
 	public Monopoly.PlayerType playerType;
 	public int isolatedCount = 0;
 	// Use this for initialization
+	public int freepass = 0;
 	void Start()
 	{
 		map = GameObject.Find("Map").GetComponent<Map>();
@@ -26,12 +27,13 @@ public class Player : MonoBehaviour
 	{
 		currentMoney = StartMoney;
 		position = 0;
+		freepass = 0;
 	}
 	public int Property()
 	{
 		int sum = 0;
 
-		foreach (var land in map.landArray)
+		foreach (var land in Map.landArray)
 		{
 			if (land.owner == playerType)
 			{
@@ -54,7 +56,7 @@ public class Player : MonoBehaviour
 	}
 	public bool haveLands()
     {
-		foreach(var land in map.landArray)
+		foreach(var land in Map.landArray)
         {
 			if (land.owner == playerType) return true;
         }
