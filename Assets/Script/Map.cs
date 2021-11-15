@@ -20,7 +20,8 @@ public class Map : MonoBehaviour
 		None,
 		Season,
 		Region3,
-		Festival
+		Festival,
+		Turnover
     }
 
 	private const char USUAL = 'u';

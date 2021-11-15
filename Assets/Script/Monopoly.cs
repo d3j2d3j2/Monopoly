@@ -36,6 +36,8 @@ public class Monopoly : MonoBehaviour
 		Own = 0,        // 자신의 턴.
 		Opponent,       // 상대의 턴.
 	};
+	public int curTurnNum = 0;
+	public const int NumTurns = 2;
 
 	// 마크.
 	public enum PlayerType
@@ -582,6 +584,17 @@ public class Monopoly : MonoBehaviour
 
 	void UpdateTurn()
 	{
+		if(curTurnNum >= NumTurns)
+        {
+			int wealth1 = player1.GetComponent<Player>().TotalWealth();
+			int wealth2 = player2.GetComponent<Player>().TotalWealth();
+			if (wealth1 > wealth2) winner = Winner.Player1;
+			else if (wealth1 < wealth2) winner = Winner.Player2;
+			else winner = Winner.Tie;
+			winCondition = Map.MonopolyType.Turnover;
+			progress = GameProgress.Result;
+			return;
+        }
 		if (turnPlayerScript.isolatedCount > 0)
 		{
 			delayTime += Time.deltaTime;
@@ -1200,6 +1213,7 @@ public class Monopoly : MonoBehaviour
 			turnPlayer = player1;
 			turnPlayerScript = player1.GetComponent<Player>();
 		}
+		curTurnNum++;
 	}
 
 	void ResetBuy()
@@ -1887,6 +1901,7 @@ public class Monopoly : MonoBehaviour
 	void Reset()
 	{
 		//turn = Turn.Own;
+		curTurnNum = 0;
 		progress = GameProgress.None;
 		map.GetComponent<Map>().LoadFromAsset();
 		mapScript = map.GetComponent<Map>();
