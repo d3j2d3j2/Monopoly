@@ -37,7 +37,7 @@ public class Monopoly : MonoBehaviour
 		Opponent,       // 상대의 턴.
 	};
 	public int curTurnNum = 0;
-	public const int NumTurns = 2;
+	public const int NumTurns = 30;
 
 	// 마크.
 	public enum PlayerType
