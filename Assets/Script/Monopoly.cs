@@ -166,6 +166,8 @@ public class Monopoly : MonoBehaviour
 	public bool usedFreePass = false;
 	public int forcedSellLand = -1;
 
+	public float stopTime = 0;
+
 	public enum GoldKeyType
     {
 		Isolated,
@@ -291,7 +293,7 @@ public class Monopoly : MonoBehaviour
 					}
                     else
                     {
-						DrawTime();
+						//DrawTime();
 						RollDice();
 					}
 				}	
@@ -642,7 +644,7 @@ public class Monopoly : MonoBehaviour
 	bool DoOwnTurn()
 	{
 		//diceValue = 0;
-
+		/*
 		timer -= Time.deltaTime;
 		if (timer <= 0.0f)
 		{
@@ -659,6 +661,31 @@ public class Monopoly : MonoBehaviour
 			else
 				return false;
 		}
+		*/
+		/*
+		if (isDiceRolled == true)
+		{
+			diceValue = UnityEngine.Random.Range(2, 12);
+		}
+		else
+			return false;
+		*/
+
+		if (isDiceRolled == true)
+		{
+			if (IsDiceRollig() == true) return false;
+			else stopTime += Time.deltaTime;
+			if (stopTime < 2) return false;
+			else
+			{
+				GameObject testDiceRegister = GameObject.Find("TestDiceRegister");
+				diceValue = testDiceRegister.GetComponent<TestDiceRegister>().total;
+				testDiceRegister.GetComponent<TestDiceRegister>().total = 0;
+				stopTime = 0;
+			}
+		}
+		else
+			return false;
 
 		Debug.Log("Dice Value: " + diceValue);
 
@@ -2039,13 +2066,44 @@ public class Monopoly : MonoBehaviour
 
 	public void RollDice()
 	{
+		if (isDiceRolled) return;
 		var oldColor = GUI.contentColor;
 		GUI.contentColor = Color.yellow;
 		if (GUI.Button(new Rect(Screen.width / 2, 20, 150, 60), "주사위\n던져!!"))
 		{
 			isDiceRolled = true;
+			GameObject testDiceRegister = GameObject.Find("TestDiceRegister");
+			Transform dice1 = testDiceRegister.transform.Find("D6 (2)");
+			Transform dice2 = testDiceRegister.transform.Find("D6 (1)");
+			dice1.position = new Vector3(-3, 17, 3);
+			dice2.position = new Vector3(0, 17, 3);
+			dice1.gameObject.SetActive(true);
+			dice2.gameObject.SetActive(true);
+			Vector3 torque = new Vector3(0, 0, 0);
+			for(int i=0; i<3; i++)
+            {
+				torque[i] = UnityEngine.Random.Range(3, 7);
+            }
+			dice1.gameObject.GetComponent<Rigidbody>().AddTorque(torque);
+			for (int i = 0; i < 3; i++)
+			{
+				torque[i] = UnityEngine.Random.Range(3, 7);
+			}
+			dice2.gameObject.GetComponent<Rigidbody>().AddTorque(torque);
 		}
+	}
 
+	public bool IsDiceRollig()
+    {
+		GameObject testDiceRegister = GameObject.Find("TestDiceRegister");
+		Transform dice1 = testDiceRegister.transform.Find("D6 (2)");
+		Transform dice2 = testDiceRegister.transform.Find("D6 (1)");
+		if (dice1.gameObject.GetComponent<Rigidbody>().velocity == Vector3.zero
+			&& dice1.gameObject.GetComponent<Rigidbody>().angularVelocity == Vector3.zero
+			&& dice2.gameObject.GetComponent<Rigidbody>().velocity == Vector3.zero
+			&& dice2.gameObject.GetComponent<Rigidbody>().angularVelocity == Vector3.zero)
+			return false;
+		else return true;
 	}
 
 	public void Display()

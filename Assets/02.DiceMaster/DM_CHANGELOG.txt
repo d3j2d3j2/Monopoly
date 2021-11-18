@@ -1,0 +1,41 @@
+v 1.1.0a
+    - Updated to support Unity 5.5.X
+    - Whenever a dice cannot select a face, it returns -1 (was returning 1 as a bug)
+    - Fixed issue with serialized paths in DiceConfig
+
+v 1.1.0
+	- Dynamic faces completed
+	- Added two new test scenes: ExampleDiceCustomFaces and ExampleDiceDynamicFaces
+	- Updated docs and manual
+	
+v 1.0.6
+	- Refactored DiceConfig
+	- Added 3 ready dynamic faces prefabs: Dynamic D2, Dynamic D6, Dynamic D12
+	- Added example custom dice: CustomFaces D6
+
+v 1.0.5
+	- Added dice strings format parser with test scene ExampleDiceSpawnFormat
+	- Updated dice creator interface for dynamic faces
+
+v 1.0.4
+	- Added face distance from center to the dice definitions, needed to reposition planes
+	- Added all correct face distances
+	- Note: weights are now also placed at that same distance
+	- Added initial dynamic faces code
+	
+v 1.0.3
+	- better default sound effect
+	- added complete instructions in the documentation
+	- added a complete set of warnings to the code
+	- out of BETA!
+		
+v 1.0.2
+	- added spawning event to the Spawner class. Added a new spawn test register scene and script.
+	- fixed bug with asset store paths being wrong
+		
+v 1.0.1
+	- fixed bug with spawner and trigger-on-start
+	- made coin less susceptible to falling by cut
+		
+v 1.0.0
+	- dice master BETA is released
