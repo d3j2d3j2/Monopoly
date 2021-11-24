@@ -1,0 +1,231 @@
+fileFormatVersion: 2
+guid: 1ddcc655ae5d0dd41a2babf1715968e5
+timeCreated: 1518416704
+licenseType: Store
+ModelImporter:
+  serializedVersion: 22
+  fileIDToRecycleName:
+    100000: //RootNode
+    100002: 1_001
+    100004: 1_bounding_append
+    100006: 1_bounding_append_002
+    100008: 1_bounding_append_003
+    100010: 1_bounding_append_004
+    100012: 1_bounding_append_005
+    100014: 1_bounding_append_006
+    100016: leaf_1_1
+    100018: leaf_1_2_red
+    100020: leaf_1_3_dark
+    100022: maple_1
+    100024: maple_1_001
+    100026: maple_1_002
+    100028: new_001
+    100030: Petal1_c_pink
+    100032: Petal2_c_white
+    100034: Plane_019
+    100036: Plane_020
+    400000: //RootNode
+    400002: 1_001
+    400004: 1_bounding_append
+    400006: 1_bounding_append_002
+    400008: 1_bounding_append_003
+    400010: 1_bounding_append_004
+    400012: 1_bounding_append_005
+    400014: 1_bounding_append_006
+    400016: leaf_1_1
+    400018: leaf_1_2_red
+    400020: leaf_1_3_dark
+    400022: maple_1
+    400024: maple_1_001
+    400026: maple_1_002
+    400028: new_001
+    400030: Petal1_c_pink
+    400032: Petal2_c_white
+    400034: Plane_019
+    400036: Plane_020
+    2300000: //RootNode
+    2300002: 1_001
+    2300004: 1_bounding_append
+    2300006: 1_bounding_append_002
+    2300008: 1_bounding_append_003
+    2300010: 1_bounding_append_004
+    2300012: 1_bounding_append_005
+    2300014: 1_bounding_append_006
+    2300016: leaf_1_1
+    2300018: leaf_1_2_red
+    2300020: leaf_1_3_dark
+    2300022: maple_1
+    2300024: maple_1_001
+    2300026: maple_1_002
+    2300028: new_001
+    2300030: Petal1_c_pink
+    2300032: Petal2_c_white
+    2300034: Plane_019
+    2300036: Plane_020
+    3300000: //RootNode
+    3300002: 1_001
+    3300004: 1_bounding_append
+    3300006: 1_bounding_append_002
+    3300008: 1_bounding_append_003
+    3300010: 1_bounding_append_004
+    3300012: 1_bounding_append_005
+    3300014: 1_bounding_append_006
+    3300016: leaf_1_1
+    3300018: leaf_1_2_red
+    3300020: leaf_1_3_dark
+    3300022: maple_1
+    3300024: maple_1_001
+    3300026: maple_1_002
+    3300028: new_001
+    3300030: Petal1_c_pink
+    3300032: Petal2_c_white
+    3300034: Plane_019
+    3300036: Plane_020
+    4300000: maple_1
+    4300002: maple_1_002
+    4300004: maple_1_001
+    4300006: 1_001
+    4300008: leaf_1_2_red
+    4300010: leaf_1_3_dark
+    4300012: leaf_1_1
+    4300014: Plane_020
+    4300016: Plane_019
+    4300018: new_001
+    4300020: 1_bounding_append_005
+    4300022: 1_bounding_append_004
+    4300024: 1_bounding_append_003
+    4300026: 1_bounding_append_002
+    4300028: 1_bounding_append_006
+    4300030: 1_bounding_append
+    4300032: Petal2_c_white
+    4300034: Petal1_c_pink
+    7400000: Default Take
+    9500000: //RootNode
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Material_002__4UV_change_png
+    second: {fileID: 2100000, guid: db2e5b994b4b0cc4d9255a98386dbe0f, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Material_004__4UV_change_png
+    second: {fileID: 2100000, guid: db2e5b994b4b0cc4d9255a98386dbe0f, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Material_008
+    second: {fileID: 2100000, guid: 48caf6406abf2fc4d80cc7d3450112de, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Material_008__1_png
+    second: {fileID: 2100000, guid: 356252b4038509a4984c14df4300c3d8, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Material_008__Texture_maple_1_png
+    second: {fileID: 2100000, guid: 39fd1e6c7d2fcb84abc5a0e50fae853f, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Material_009__1_png
+    second: {fileID: 2100000, guid: 356252b4038509a4984c14df4300c3d8, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Material_Leaf__0903-26_apply_png
+    second: {fileID: 2100000, guid: 2cc6ea18847786e4bb22bd5834dca219, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Material_Leaf__UV_map_leaf_a_png
+    second: {fileID: 2100000, guid: aa621271f7b755a4e8ba60dbde1d95cd, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Material_Leaf__UV_map_leaf_a_png_001
+    second: {fileID: 2100000, guid: aa621271f7b755a4e8ba60dbde1d95cd, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Material_petal__0215-4_png
+    second: {fileID: 2100000, guid: e617ded651b673a4eb3d9fdb1e8b7405, type: 2}
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+    materialLocation: 0
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    rigImportErrors: 
+    rigImportWarnings: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    importAnimatedCustomProperties: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    extraUserProperties: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 300
+    meshCompression: 0
+    addColliders: 0
+    importVisibility: 1
+    importBlendShapes: 1
+    importCameras: 1
+    importLights: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+    normalCalculationMode: 4
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    serializedVersion: 2
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    rootMotionBoneRotation: {x: 0, y: 0, z: 0, w: 1}
+    hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 1
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 2
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

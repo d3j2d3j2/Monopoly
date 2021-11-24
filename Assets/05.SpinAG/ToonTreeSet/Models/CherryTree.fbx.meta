@@ -1,0 +1,159 @@
+fileFormatVersion: 2
+guid: f5162360c29364be69dd9eed3444144b
+ModelImporter:
+  serializedVersion: 23
+  fileIDToRecycleName:
+    100000: BlossomBig1
+    100002: BlossomBig2
+    100004: BlossomChains
+    100006: BlossomMedium
+    100008: BlossomSmall
+    100010: //RootNode
+    100012: Trunk
+    400000: BlossomBig1
+    400002: BlossomBig2
+    400004: BlossomChains
+    400006: BlossomMedium
+    400008: BlossomSmall
+    400010: //RootNode
+    400012: Trunk
+    2100000: CherryBlossom
+    2100002: CherryBlossomDark
+    2100004: CherryBlossomDark.1
+    2100006: CherryBlossom.1
+    2100008: CherryBlossomWhite
+    2100010: CherryBark
+    2300000: BlossomBig1
+    2300002: BlossomBig2
+    2300004: BlossomChains
+    2300006: BlossomMedium
+    2300008: BlossomSmall
+    2300010: Trunk
+    3300000: BlossomBig1
+    3300002: BlossomBig2
+    3300004: BlossomChains
+    3300006: BlossomMedium
+    3300008: BlossomSmall
+    3300010: Trunk
+    4300000: BlossomChains
+    4300002: BlossomMedium
+    4300004: BlossomSmall
+    4300006: BlossomBig1
+    4300008: BlossomBig2
+    4300010: Trunk
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: CherryBark
+    second: {fileID: 2100000, guid: 826f0a8d397d94aecb7caee75a627b76, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: CherryBlossom
+    second: {fileID: 2100000, guid: 2b0e66eeed0f247b98e4d89b3bf19e8d, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: CherryBlossom.1
+    second: {fileID: 2100000, guid: 2b0e66eeed0f247b98e4d89b3bf19e8d, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: CherryBlossomDark
+    second: {fileID: 2100000, guid: b93ddaa3e2f1a4cb3916d7d7e78ec26d, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: CherryBlossomDark.1
+    second: {fileID: 2100000, guid: b93ddaa3e2f1a4cb3916d7d7e78ec26d, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: CherryBlossomWhite
+    second: {fileID: 2100000, guid: ac42853a2bfa04fd28cea11f52f24001, type: 2}
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+    materialLocation: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    rigImportErrors: 
+    rigImportWarnings: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    importAnimatedCustomProperties: 0
+    importConstraints: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    extraUserProperties: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    useSRGBMaterialColor: 1
+    importVisibility: 1
+    importBlendShapes: 1
+    importCameras: 1
+    importLights: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    preserveHierarchy: 0
+    indexFormat: 0
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+    previousCalculatedGlobalScale: 1
+    hasPreviousCalculatedGlobalScale: 0
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+    normalCalculationMode: 4
+    legacyComputeAllNormalsFromSmoothingGroupsWhenMeshHasBlendShapes: 0
+    blendShapeNormalImportMode: 1
+    normalSmoothingSource: 0
+  importAnimation: 0
+  copyAvatar: 0
+  humanDescription:
+    serializedVersion: 2
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 1
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 0
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

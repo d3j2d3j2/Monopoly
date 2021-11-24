@@ -27,7 +27,7 @@ public class Title_Camera_S : MonoBehaviour {
 			text.SetActive(true);
 			if (Input.GetMouseButtonDown(0))
 			{
-				SceneManager.LoadScene("Monopoly");
+				SceneManager.LoadScene("Lobby");
 			}
 		}
 

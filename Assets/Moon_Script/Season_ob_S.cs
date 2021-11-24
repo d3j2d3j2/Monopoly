@@ -16,10 +16,9 @@ public class Season_ob_S : MonoBehaviour {
 
 		if (ob_up_time < 1.5)
 		{
-			season_ob.transform.position = new Vector3(season_ob.transform.position.x, season_ob.transform.position.y + ob_up_time, season_ob.transform.position.z);
-		
+			season_ob.transform.position = new Vector3(season_ob.transform.position.x, season_ob.transform.position.y + ob_up_time* Time.deltaTime, season_ob.transform.position.z);
+			ob_up_time += Time.deltaTime;
 			Debug.Log(ob_up_time);
 		}
-		ob_up_time += Time.deltaTime;
 	}
 }
